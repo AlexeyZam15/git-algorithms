@@ -10,12 +10,13 @@ class Node:
         self.node_value = node_value
 
     def __str__(self):
-        return f'{self.node_value.key}: {self.node_value.value}'
+        return f'{self.node_value.key}:{self.node_value.value}'
 
 
 class Bucket:
-    def __init__(self):
+    def __init__(self, index):
         self.head: Node = None
+        self.index = index
 
     def add(self, entity: Entity):
         node = Node(entity)
@@ -67,6 +68,12 @@ class Bucket:
             node = node.next
         return '\n'.join(strings)
 
+    def __iter__(self):
+        node = self.head
+        while node is not None:
+            yield node
+            node = node.next
+
 
 class HashMap:
     __BUCKETS_COUNTS_DEFAULT = 16
@@ -75,7 +82,7 @@ class HashMap:
 
     def __init__(self, init_count=__BUCKETS_COUNTS_DEFAULT):
         self._buckets_count = init_count
-        self._buckets = list[Bucket]([None for i in range(self._buckets_count)])
+        self._buckets = list[Bucket]([None for _ in range(self._buckets_count)])
         self.size = 0
 
     def __calculate_bucket_index(self, key):
@@ -84,7 +91,7 @@ class HashMap:
     def recalculate(self):
         self.size = 0
         old = self._buckets
-        self._buckets = list[Bucket]([None for i in range(len(self._buckets) * 2)])
+        self._buckets = list[Bucket]([None for _ in range(len(self._buckets) * 2)])
         for i in range(len(old)):
             bucket = old[i]
             if bucket is not None:
@@ -100,7 +107,7 @@ class HashMap:
         index = self.__calculate_bucket_index(key)
         bucket = self._buckets[index]
         if bucket is None:
-            bucket = Bucket()
+            bucket = Bucket(index)
             self._buckets[index] = bucket
         entity = Entity(key, value)
         ret = bucket.add(entity)
@@ -134,3 +141,8 @@ class HashMap:
 
     def print(self):
         print(self, end=f'\n{"-" * 20}\n')
+
+    def __iter__(self):
+        for bucket in self._buckets:
+            if bucket is not None and bucket.head is not None:
+                yield bucket
