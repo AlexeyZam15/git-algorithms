@@ -74,6 +74,14 @@ class Bucket:
             yield node
             node = node.next
 
+    def __len__(self):
+        count = 0
+        for i in self:
+            count += 1
+        return count
+
+
+
 
 class HashMap:
     __BUCKETS_COUNTS_DEFAULT = 16
@@ -146,3 +154,9 @@ class HashMap:
         for bucket in self._buckets:
             if bucket is not None and bucket.head is not None:
                 yield bucket
+
+    def __len__(self):
+        count = 0
+        for bucket in self:
+            count += len(bucket)
+        return count

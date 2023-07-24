@@ -14,8 +14,9 @@ def main():
     ret = hashmap1.put("9", "Зинанда")
     ret = hashmap1.put("10", "Иван")
 
+    print(f"hashmap1 содержит элементов: {len(hashmap1)} ")
     for bucket in hashmap1:
-        print(f'Bucket {bucket.index}', end=":\n")
+        print(f'Bucket {bucket.index}, bucket size - {len(bucket)}', end=":\n")
         for node in bucket:
             print(node)
 
